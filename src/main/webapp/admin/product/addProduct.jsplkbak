@@ -1,0 +1,324 @@
+<%@ page language="java"
+	import="java.util.*,java.sql.*,com.vdong.commons.db.*" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+
+<title>产品信息添加</title>
+
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<LINK href="css/admin.css" type="text/css" rel="stylesheet">
+<style type="text/css">
+<!--
+.STYLE3 {
+	font-size: 16px
+}
+-->
+</style>
+<script charset="utf-8" src="<%=path%>/kindeditor/kindeditor-min.js"></script>
+<script charset="utf-8" src="<%=path%>/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript"
+	src="<%=path%>/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="<%=path%>/js/popup.js"></script>
+<script type="text/javascript" src="<%=path%>/js/jquery-1.4.2.js"></script>
+<script type="text/javascript">
+			function up() {
+				var pop = new Popup( {
+					contentType : 1,
+					isReloadOnClose : false,
+					width : 400,
+					height : 200
+				});
+				pop.setContent("contentUrl", "<%=path%>/upload/upload.jsp");
+		pop.setContent("title", "文件上传");
+		pop.build();
+		pop.show();
+	}
+
+	function alterSystem() {
+		var service = "";
+		var installation = "";
+		for (var i = 0; i < $("[name='serviceCheckBox']").length; i++) {
+			if (service != "") {
+				service = service + ",";
+			}
+			if ($("[name='serviceCheckBox']")[i].checked) {
+				service = service + "1";
+			} else {
+				service = service + "0";
+			}
+		}
+		for (var i = 0; i < $("[name='installationCheckBox']").length; i++) {
+			if (installation != "") {
+				installation = installation + ",";
+			}
+			if ($("[name='installationCheckBox']")[i].checked) {
+				installation = installation + "1";
+			} else {
+				installation = installation + "0";
+			}
+		}
+		$("#service").val(service);
+		$("#installation").val(installation);
+		$("#systemForm").submit();
+	}
+</script>
+</head>
+
+<body>
+	<p>&nbsp;</p>
+	<p>&nbsp;</p>
+	<form action="AddProductAction" method="post"
+		enctype="multipart/form-data">
+		<table width="70%" border="0" align="center" cellspacing="1"
+			bordercolor="#000000" bgcolor="#0000CC">
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">产品排序：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF	"><label><input
+						name="id" type="text" id="id"><span style="color:red">&nbsp;&nbsp;
+							*(必填)</span></label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">供应商：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><select
+						name="pid">
+							<%
+								DBManager dbm = new DBManager();
+								Connection conn = dbm.getConnection();
+								String sqlSupplier = "select id, hotelName from hotelsupplier";
+								PreparedStatement pstmSupplier = conn.prepareStatement(sqlSupplier);
+								ResultSet rsSupplier = pstmSupplier.executeQuery();
+								while (rsSupplier.next()) {
+							%>
+							<option value=<%=rsSupplier.getString("id")%>><%=rsSupplier.getString("hotelName")%></option>
+							<%
+								}
+							%>
+					</select></label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">产品分类：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label> <select
+						name="other">
+							<%
+								String sqlkind = "select id, hotelKind from hotelkind  where status = '0'";
+								PreparedStatement pstmtkind = conn.prepareStatement(sqlkind);
+								ResultSet rstkind = pstmtkind.executeQuery();
+								while (rstkind.next()) {
+							%>
+							<option value=<%=rstkind.getString("id")%>>
+								<%=rstkind.getString("hotelKind")%>
+							</option>
+
+							<%
+								}
+							%>
+					</select>
+				</label></td>
+			</tr>
+
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">产品属性：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><select
+						name="property">
+							<option value="0">推荐</option>
+							<option value="1">热卖</option>
+							<option value="2">特价</option>
+							<option value="3">新品</option>
+					</select></label></td>
+			</tr>
+
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">床型：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><select
+						name="bedType">
+							<option value="大床">大床</option>
+							<option value="单床">单床</option>
+							<option value="双床">双床</option>
+					</select></label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">房型名称：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						name="roomName" type="text" id="roomName"></label></td>
+			</tr>
+
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">度假币：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						name="virtualCoin" type="text" id="virtualCoin"></label></td>
+			</tr>
+
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">实体货币：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						name="coin" type="text" id="coin"></label></td>
+			</tr>
+
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">宽带：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><label> <input name="wifi"
+						type="checkbox" value="收费有线" /> 收费有线 
+				</label> <label><input name="wifi" type="checkbox" value="收费Wi-Fi" />
+						收费Wi-Fi </label> <label><input name="wifi" type="checkbox"
+						value="免费有线" /> 免费有线 </label> <label><input name="wifi"
+						type="checkbox" value="免费Wi-Fi" /> 免费Wi-Fi </label></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">调用：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><label><input name="property"
+						type="checkbox" value="推荐" /> 推荐 </label> <label><input
+						name="property" type="checkbox" value="热卖" /> 热卖 </label> <label><input
+						name="property" type="checkbox" value="特价" /> 特价 </label> <label><input
+						name="property" type="checkbox" value="新品" /> 新品 </label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">封面图片：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						type="file" name="itemPic" id="itemPic"></label></td>
+			</tr>
+			</tr>
+			<tr>
+				<td colspan="2" bgcolor="#FFFFFF">服务设施</td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">酒店服务：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF">
+					<%
+						String sqlservice = "select id, name, type from hotelservice";
+						PreparedStatement pstmtservice = conn.prepareStatement(sqlservice);
+						ResultSet supplier = pstmtservice.executeQuery();
+						while (supplier.next()) {
+							if ("0".equals(supplier.getString("type"))) {
+					%> <label><input name="serviceCheckBox" type="checkbox"
+						value="<%=supplier.getString("id")%>" /> <%=supplier.getString("name")%></label>
+					<%
+						}
+						}
+					%> <input type="hidden" name="service" id="service" />
+				</td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">酒店设备：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><input type="hidden"
+					name="installation" id="installation" /> <%
+ 	ResultSet supplier1 = pstmtservice.executeQuery();
+ 	while (supplier1.next()) {
+ 		if ("1".equals(supplier1.getString("type"))) {
+ %> <label><input name="installationCheckBox"
+						type="checkbox" value="<%=supplier1.getString("id")%>" /> <%=supplier1.getString("name")%></label>
+					<%
+						}
+						}
+						if (pstmtservice != null) {
+							pstmtservice.close();
+						}
+						if (supplier != null) {
+							supplier.close();
+						}
+						if (supplier1 != null) {
+							supplier1.close();
+						}
+						if (pstmSupplier != null) {
+							pstmSupplier.close();
+						}
+						if (rsSupplier != null) {
+							rsSupplier.close();
+						}
+						if (rstkind != null) {
+							rstkind.close();
+						}
+						if (pstmtkind != null) {
+							pstmtkind.close();
+						}
+						if (conn != null) {
+							conn.close();
+						}
+					%>
+			<tr>
+				<td colspan="2" bgcolor="#FFFFFF">房型详情</td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">早餐：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><select name="breakfast">
+						<option value="无早">无早</option>
+						<option value="有早">有早</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">购买须知：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><textarea rows="10" cols="80"
+						name="notes"></textarea></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">费用说明：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><textarea rows="10" cols="80"
+						name="costExplain"></textarea></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">图文详情 ：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><textarea rows="10" cols="80"
+						name="refundExplain"></textarea></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">产品详情：</div>
+				</td>
+				<td bgcolor="#FFFFFF"><textarea rows="10" cols="80"
+						name="details"></textarea></td>
+			</tr>
+			<tr>
+				<td colspan="2" bgcolor="#FFFFFF">
+
+					<div align="center">
+						<label> <input type="submit" name="Submit" value="提交">
+							<input type="reset" name="Submit2" value="重置"></label>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

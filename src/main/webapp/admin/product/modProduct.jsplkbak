@@ -1,0 +1,290 @@
+<%@ page language="java"
+	import="java.util.*,java.sql.*,com.vdong.commons.db.*" pageEncoding="UTF-8"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<base href="<%=basePath%>">
+<title>产品信息修改</title>
+<META http-equiv=Content-Type content="text/html; charset=UTF-8">
+<LINK href="css/admin.css" type="text/css" rel="stylesheet">
+<script charset="utf-8" src="<%=path%>/kindeditor/kindeditor-min.js"></script>
+<script charset="utf-8" src="<%=path%>/kindeditor/lang/zh_CN.js"></script>
+<script type="text/javascript" src="<%=path%>/js/popup.js"></script>
+<script type="text/javascript">
+			function up() {
+				var pop = new Popup( {
+					contentType : 1,
+					isReloadOnClose : false,
+					width : 400,
+					height : 200
+				});
+				pop.setContent("contentUrl", "<%=path%>/upload/upload.jsp");
+		pop.setContent("title", "文件上传");
+		pop.build();
+		pop.show();
+	}
+</script>
+<style type="text/css">
+<!--
+.STYLE3 {
+	font-size: 16px
+}
+-->
+</style>
+</head>
+<body>
+	<p>&nbsp;</p>
+	<p>&nbsp;</p>
+	<form action="platform/toSavelogo.html" method="post"  enctype="multipart/form-data">
+		<%
+			DBManager dbm = new DBManager();
+			Connection conn = dbm.getConnection();
+			String id = request.getParameter("id");
+			String sqlRoom = "SELECT * FROM hotelroom WHERE id = " + id;
+			PreparedStatement stat = conn.prepareStatement(sqlRoom);
+			ResultSet rsRoom = stat.executeQuery();
+			rsRoom.next();
+		%>
+		<table width="70%" border="0" align="center" cellspacing="1"
+			bordercolor="#000000" bgcolor="#0000CC">
+			<input name="id" type="hidden" id="id" value='<%=id%>'>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">排序：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						name="sid" type="text" id="sid" value=<%=rsRoom.getString("id")%>></label>
+				</td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">供应商：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><select
+						name="pid">
+							<%
+								String sqlSupplier = "select id, hotelName from hotelsupplier";
+								PreparedStatement pstmSupplier = conn.prepareStatement(sqlSupplier);
+								ResultSet rsSupplier = pstmSupplier.executeQuery();
+								while (rsSupplier.next()) {
+							%>
+							<option value=<%=rsSupplier.getString("id")%>
+								<%if (rsSupplier.getString("id").equals(rsRoom.getString("pid"))) {%>
+								selected="selected" <%}%>><%=rsSupplier.getString("hotelName")%></option>
+							<%
+								}
+							%>
+					</select></label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">产品分类：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label> <select
+						name="other">
+							<%
+								String sqlkind = "select id, hotelKind from hotelkind";
+								PreparedStatement pstmtkind = conn.prepareStatement(sqlkind);
+								ResultSet rstkind = pstmtkind.executeQuery();
+								while (rstkind.next()) {
+							%>
+							<option value=<%=rstkind.getString("id")%>
+								<%if (rstkind.getString("id").equals(rsRoom.getString("other"))) {%>
+								selected="selected" <%}%>>
+								<%=rstkind.getString("hotelKind")%>
+							</option>
+							<%
+								}
+							%>
+					</select>
+				</label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">床型：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><select
+						name="bedType">
+							<option value="大床"
+								<%if ("大床".equals(rsRoom.getString("bedType"))) {%>
+								selected="selected" <%}%>>大床</option>
+							<option value="单床"
+								<%if ("单床".equals(rsRoom.getString("bedType"))) {%>
+								selected="selected" <%}%>>单床</option>
+							<option value="双床"
+								<%if ("双床".equals(rsRoom.getString("bedType"))) {%>
+								selected="selected" <%}%>>双床</option>
+					</select></label></td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">房型名称：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><label><input
+						name="roomName" type="text" id="roomName" value=<%=rsRoom.getString("roomName")%>></label>
+				</td>
+			</tr>
+			
+			<tr>
+					<td width="28%" bgcolor="#FFFFFF">
+						<div align="right" class="STYLE3">封面图片：</div>
+					</td>
+					<td width="72%" bgcolor="#FFFFFF">
+						<label><input type="file" name="file" id="file"></label>
+					</td>
+				</tr>
+			
+			
+			
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 度假币： </div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF">
+					<label><input name="virtualCoin" type="text" id="virtualCoin" value=<%=rsRoom.getString("virtualCoin")%>></label>
+				</td>
+			</tr>
+			
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 实体货币： </div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF">
+					<label><input name="coin" type="text" id="coin" value=<%=rsRoom.getString("coin")%>></label>
+				</td>
+			</tr>
+			
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 宽带： </div>
+				</td>
+				<td bgcolor="#FFFFFF">
+					<label><input name="wifi" type="checkbox" value="收费有线" /> 收费有线 </label> 
+					<label><input name="wifi" type="checkbox" value="收费Wi-Fi" /> 收费Wi-Fi </label> 
+					<label><input name="wifi" type="checkbox" value="免费有线" /> 免费有线 </label> 
+					<label><input name="wifi" type="checkbox" value="免费Wi-Fi" /> 免费Wi-Fi </label>
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 调用： </div>
+				</td>
+				<td bgcolor="#FFFFFF">
+					<label><input name="property" type="checkbox" value="推荐" /> 推荐 </label> 
+					<label><input name="property" type="checkbox" value="热卖" /> 热卖 </label> 
+					<label><input name="property" type="checkbox" value="特价" /> 特价 </label> 
+					<label><input name="property" type="checkbox" value="新品" /> 新品 </label>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" bgcolor="#FFFFFF">房型详情</td>
+			</tr>
+			<tr>
+				<td width="28%" bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">早餐：</div>
+				</td>
+				<td width="72%" bgcolor="#FFFFFF"><select name="breakfast">
+						<option value="无早"
+						<%if (rsRoom.getString("breakfast").equals("无早")){%>
+								selected="selected" <%}%>>无早</option>
+						<option value="有早"
+						<%if (rsRoom.getString("breakfast").equals("有早")) {%>
+								selected="selected" <%}%>>有早</option>
+				</select></td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 购买须知： </div>
+				</td>
+				<td bgcolor="#FFFFFF">
+					<textarea rows="10" cols="80" name="notes"><%=rsRoom.getString("notes").replaceAll("<br>","\r\n").replaceAll("&nbsp;"," ")%></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3"> 费用说明： </div>
+				</td>
+				<td bgcolor="#FFFFFF">
+					<textarea rows="10" cols="80"  name="costExplain"><%=rsRoom.getString("costExplain").replaceAll("<br>","\r\n").replaceAll("&nbsp;"," ")%></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td bgcolor="#FFFFFF">
+					<div align="right" class="STYLE3">图文详情 ： </div>
+				</td>
+				<td bgcolor="#FFFFFF">
+					<textarea rows="10" cols="80"  name="refundExplain"><%=rsRoom.getString("refundExplain").replaceAll("<br>","\r\n").replaceAll("&nbsp;"," ")%></textarea>
+				</td>
+			</tr>
+
+
+
+
+
+
+
+
+			<tr>
+				<td colspan="2" bgcolor="#FFFFFF">
+
+					<div align="center">
+						<label> <input type="button" name="Submit"
+							onclick="save();" value="提交"> <input type="reset"
+							name="Submit2" value="重置"></label>
+					</div>
+
+				</td>
+			</tr>
+		</table>
+
+		<%
+		if (pstmSupplier != null) {
+	 		pstmSupplier.close();
+	 	}
+	 	if (rsSupplier != null) {
+	 		rsSupplier.close();
+	 	}
+	 	if (rstkind != null) {
+			rstkind.close();
+		}
+		if (pstmtkind != null) {
+			pstmtkind.close();
+		}
+		if (rsRoom != null)
+			rsRoom.close();
+		if (stat != null)
+			stat.close();
+		if (conn != null)
+			conn.close();
+		%>
+	</form>
+	<script type="text/javascript">
+		var editor;
+		KindEditor.ready(function(K) {
+			editor = K.create('textarea[name="info"]', {
+				resizeType : 1,
+				allowPreviewEmoticons : false,
+				allowImageUpload : false,
+				items : [ 'fontname', 'fontsize', '|', 'forecolor',
+						'hilitecolor', 'bold', 'italic', 'underline',
+						'removeformat', '|', 'justifyleft', 'justifycenter',
+						'justifyright', 'insertorderedlist',
+						'insertunorderedlist' ]
+			});
+		});
+
+		function save() {
+
+			//editor.sync();
+
+			document.forms[0].submit();
+
+		}
+	</script>
+</body>
+</html>

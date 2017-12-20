@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Capricorncd Calendar-Price-jQuery</title>
+    <link rel="stylesheet" href="../build/calendar-price-jquery.css">
+    <style>
+    	body {
+    		margin: 0; padding: 0; font-family: "Microsoft YaHei UI";
+    	}
+    	.box:after{display: block;height: 0;content: '';clear: both;overflow: hidden;visibility: hidden;}    	
+    	.container{width: 90%;}
+    	.contant{background: #f5f5f5;height: 100%;width: 10%;}
+    	.left{float: left;}
+    	.right{float: right;}
+    	p{margin: 0;padding: 0;}
+    	.to-month{height: 40px;line-height:40px;padding-left: 30px;}
+    	.active{background: #098cc2;color: #fff;}
+    </style>
+</head>
+<body>
+<div class="box">
+	<div class="left contant">111111</div>
+	<div class="container right"></div>
+</div>	
+
+<script src="jquery-1.12.4.min.js"></script>
+<!--<script src="../build/calendar-price-jquery.min.js"></script>-->
+<script src="../src/calendar-price-jquery.js"></script>
+
+<script>
+    var lastMonth = 6;
+    var endDate = formatDate(new Date(new Date().setMonth(new Date().getMonth() + lastMonth)), "yyyy-MM-dd");//.getFullYear()+'-'+(new Date(new Date().setMonth(new Date().getMonth()+6)).getMonth()+1)+'-'+(new Date(new Date().setMonth(new Date().getMonth()+6)).getDate());
+
+    (function(){
+    var mockData = [
+//      {
+//          date: "2017-06-21",
+//          stock: "9000",
+//          buyNumMax: "50",
+//          buyNumMin: "1",
+//          price: "0.12",
+//          priceMarket: "100.00",
+//          priceSettlement: "90.00",
+//          priceRetail: "99.00"
+//      },{
+//          date: "2017-07-12",
+//          stock: "9000",
+//          buyNumMax: "50",
+//          buyNumMin: "1",
+//          price: "12.00",
+//          priceMarket: "100.00",
+//          priceSettlement: "90.00",
+//          priceRetail: "99.00"
+//      }
+    ];
+
+    for (var i = 0; i < 100; i++) {
+//      mockData.push({
+//          date: '2017-'+ fd(i%5 + 6) +'-' + fd(randNum(30)),
+//          stock: i*21,
+//          buyNumMax: "50",
+//          buyNumMin: "1",
+//          price: randNum(i) + '.00',
+//          priceMarket: "100.00",
+//          priceSettlement: "90.00",
+//          priceRetail: "99.00"
+//      });
+    }
+
+    $.CalendarPrice({
+        el: '.container',
+        menu_el: '.contant',
+//        startDate: '2017-08-02',
+        endDate: endDate,
+        data: mockData,
+        // 配置需要设置的字段名称
+        config: [
+		   {
+   		        key: 'stock',
+        		name: '每天库存'
+        	},
+        	{
+        		key: 'buyNumMax',
+        		name: '最多购买数'
+        	},
+			 {
+   		        key: 'priceMarket',
+        		name: '门市价'
+        	},
+        	{
+        		key: 'buyNumMin',
+        		name: '最少购买数'
+        	},
+        	{
+        		key: 'price',
+        		name: '指导价'
+        	},
+        	{
+        		key: 'djbprice',
+        		name: '度假币金额'
+        	},
+        	{
+        		key: 'priceSettlement',
+        		name: '结算价'
+        	},
+        	{
+        		key: 'priceRetail',
+        		name: '度假币限制'
+        	},
+        	{
+        	    key: 'status',
+        	    name: '状态',
+        	    type: 'radio',
+        	    items: [{ text: '正常', value: '1' }, { text: '下架', value: '0' }, ],
+        	},
+        	{
+        	    key: 'payType',
+        	    name: '支付方式',
+        	    type: 'checkbox',
+        	    items: [{ text: '微信支付', value: '1' }, { text: '度假币支付', value: '2' }, ],
+        	}
+            
+        ],
+        // 配置在日历中要显示的字段
+        show: [
+        	{
+        		key: 'priceMarket',
+                name: '门市价:￥'
+        	},
+        	{
+                key: 'djbprice',
+                name: '度假币:￥'
+        	},
+        	{
+                key: 'stock',
+        		name: '库:'
+        	}
+        ],
+        callback: function (data) {
+            console.log('callback ....');
+            console.log(data);
+        },
+        cancel: function () {
+        	console.log('取消设置 ....');
+        	// 取消设置
+        	// 这里可以触发关闭设置窗口
+        	// ...
+        },
+        error: function (err) {
+            console.error(err.msg);
+            alert(err.msg);
+        },
+        // 自定义颜色
+        style: {
+            // 头部背景色
+            headerBgColor: '#098cc2',
+            // 头部文字颜色
+            headerTextColor: '#fff',
+            // 周一至周日背景色，及文字颜色
+            weekBgColor: '#098cc2',
+            weekTextColor: '#fff',
+            // 周末背景色，及文字颜色
+            weekendBgColor: '#098cc2',
+            weekendTextColor: '#fff',
+            // 有效日期颜色
+            validDateTextColor: '#333',
+            validDateBgColor: '#fff',
+            validDateBorderColor: '#eee',
+            // Hover
+            validDateHoverBgColor: '#098cc2',
+            validDateHoverTextColor: '#fff',
+            // 无效日期颜色
+            invalidDateTextColor: '#ccc',
+            invalidDateBgColor: '#fff',
+            invalidDateBorderColor: '#eee',
+            // 底部背景颜色
+            footerBgColor: '#fff',
+            // 重置按钮颜色
+            resetBtnBgColor: '#77c351',
+            resetBtnTextColor: '#fff',
+            resetBtnHoverBgColor: '#55b526',
+            resetBtnHoverTextColor: '#fff',
+            // 确定按钮
+            confirmBtnBgColor: '#098cc2',
+            confirmBtnTextColor: '#fff',
+            confirmBtnHoverBgColor: '#00649a',
+            confirmBtnHoverTextColor: '#fff',
+            // 取消按钮
+            cancelBtnBgColor: '#fff',
+            cancelBtnBorderColor: '#bbb',
+            cancelBtnTextColor: '#999',
+            cancelBtnHoverBgColor: '#fff',
+            cancelBtnHoverBorderColor: '#bbb',
+            cancelBtnHoverTextColor: '#666'
+        }
+        // 点击有效的某一触发的回调函数
+        // 注意：配置了此参数，设置窗口无效，即不能针对日期做参数设置
+        // 返回每天的数据
+//        everyday: function (dayData) {
+//            console.log('点击某日，返回当天的数据');
+//            console.log(dayData);
+//        },
+        // 隐藏底部按钮（重置、确定、取消），前台使用该插件时，则需要隐藏底部按钮
+  //     hideFooterButton: true
+    });
+    //menu.init($('.contant'), endDate);
+})();
+
+function randNum(max) {
+    return Math.round(Math.random() * max);
+}
+
+function fd(n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n;
+}
+</script>
+
+</body>
+</html>
